@@ -1,26 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ChangeEvent, FC, useState } from "react";
+import "./App.css";
 
-function App() {
+type Todo = {
+  text: string;
+  deadline: number;
+};
+
+const App: FC = () => {
+  const [text, setText] = useState<string>("");
+  const [deadline, setDeadline] = useState<number>(0);
+  const [taskArray, setTaskArray] = useState<Todo[]>([]);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    if (event.target.name === "text") {
+      setText(event.target.value);
+    } else {
+      setDeadline(Number(event.target.value));
+    }
+  };
+
+  const addTask = (): void => {
+    const newTask = { text: text, deadline: deadline };
+    setTaskArray([...taskArray, newTask]);
+    setText("");
+    setDeadline(0);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="App">
+        <input
+          type="text"
+          name="text"
+          value={text}
+          onChange={handleChange}
+          placeholder="Your Text"
+        />
+        <input
+          type="number"
+          name="deadline"
+          value={deadline}
+          onChange={handleChange}
+          placeholder="Deadline (in days)..."
+        />
+        <button onClick={addTask}>Add Task</button>
+      </div>
+      <div>
+        {taskArray.map((list, index) => (
+          <div key={index}>
+            <li>Task: {list.text} Deadline: {list.deadline}</li>
+          </div>
+        ))}
+      </div>
+    </>
   );
-}
+};
 
 export default App;
